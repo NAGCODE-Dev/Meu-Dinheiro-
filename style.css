@@ -1,7 +1,7 @@
 :root {
-  --bg: #f5f7f4;
+  --bg: #87fa6b;
   --card: #ffffff;
-  --text: #121613;
+  --text: #136b29;
   --muted: #68716b;
   --line: #e4e8e4;
 
@@ -76,7 +76,7 @@ p {
 }
 
 .hero {
-  background: #101311;
+  background: #08461c;
   color: white;
 }
 
@@ -105,7 +105,7 @@ p {
 
 .progress {
   height: 8px;
-  background: #29302b;
+  background: #26803f;
   border-radius: 99px;
   overflow: hidden;
   margin-top: 14px;

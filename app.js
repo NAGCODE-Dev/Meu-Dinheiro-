@@ -428,22 +428,52 @@ $("investmentForm").addEventListener("submit", event => {
     return;
   }
 
-  const investment = {
-    id: crypto.randomUUID(),
-    name,
-    amount,
-    type,
-    rate:
-      type === "monthly"
-        ? Number($("investmentRate").value) || 0
-        : 0,
-    cdiPercent:
-      type === "cdi"
-        ? Number($("investmentCdiPercent").value) || 0
-        : 0
-  };
+  const rate =
+    type === "monthly"
+      ? Number($("investmentRate").value) || 0
+      : 0;
 
-  data.investments.push(investment);
+  const cdiPercent =
+    type === "cdi"
+      ? Number($("investmentCdiPercent").value) || 0
+      : 0;
+
+  /*
+   * Procura um investimento existente com:
+   * - mesmo nome
+   * - mesmo tipo de rendimento
+   * - mesma taxa
+   *
+   * Assim, novos aportes são somados ao investimento
+   * em vez de criar vários registros separados.
+   */
+  const existing = data.investments.find(investment =>
+    investment.name.toLowerCase() === name.toLowerCase() &&
+    investment.type === type &&
+    (
+      type === "monthly"
+        ? Number(investment.rate) === rate
+        : Number(investment.cdiPercent) === cdiPercent
+    )
+  );
+
+  if (existing) {
+
+    existing.amount =
+      Number(existing.amount) + amount;
+
+  } else {
+
+    data.investments.push({
+      id: crypto.randomUUID(),
+      name,
+      amount,
+      type,
+      rate,
+      cdiPercent
+    });
+
+  }
 
   saveData();
 
@@ -459,20 +489,6 @@ $("investmentForm").addEventListener("submit", event => {
 
   render();
 });
-
-function removeInvestment(index) {
-
-  if (!confirm("Excluir este investimento?")) {
-    return;
-  }
-
-  data.investments.splice(index, 1);
-
-  saveData();
-
-  render();
-}
-
 /* =========================
    LANÇAMENTOS
 ========================= */
