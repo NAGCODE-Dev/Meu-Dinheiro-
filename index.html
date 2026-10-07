@@ -1,112 +1,351 @@
 <!doctype html>
 <html lang="pt-BR">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#101311">
-<link rel="manifest" href="manifest.webmanifest">
-<link rel="icon" href="icon.svg">
-<title>Meu Dinheiro</title>
-<style>
-:root{--bg:#f5f7f4;--card:#fff;--text:#121613;--muted:#68716b;--line:#e4e8e4;--green:#16a36a;--red:#dc4c4c;--amber:#e5a524}
-*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:15px system-ui,-apple-system,Segoe UI,sans-serif}
-main{max-width:760px;margin:auto;padding:20px 16px 90px}.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px}
-h1{font-size:25px;margin:0}.sub{color:var(--muted);margin-top:3px}.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
-.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px}.hero{background:#101311;color:#fff}.hero .sub{color:#b7c0ba}.value{font-size:25px;font-weight:750;margin-top:5px}.small{font-size:13px;color:var(--muted)}.hero .small{color:#b7c0ba}
-.progress{height:8px;background:#29302b;border-radius:99px;overflow:hidden;margin-top:12px}.progress i{display:block;height:100%;background:#5fd09c;width:0}
-section{margin-top:14px}h2{font-size:17px;margin:0 0 10px}
-.row{display:flex;justify-content:space-between;gap:10px;padding:11px 0;border-bottom:1px solid var(--line)}.row:last-child{border-bottom:0}
-.amount.pos{color:var(--green)}.amount.neg{color:var(--red)}
-button,input,select{font:inherit}button{border:0;border-radius:12px;padding:11px 14px;background:var(--green);color:#fff;font-weight:650;cursor:pointer}
-.secondary{background:#e9eeea;color:var(--text)}.danger{background:#fee8e8;color:#a32626}
-form{display:grid;gap:9px}.two{display:grid;grid-template-columns:1fr 1fr;gap:9px}
-input,select{width:100%;padding:11px 12px;border:1px solid var(--line);border-radius:12px;background:#fff;color:var(--text)}
-.actions{display:flex;gap:8px;justify-content:flex-end;margin-top:8px}
-.pill{display:inline-block;padding:5px 8px;border-radius:99px;background:#edf5f0;font-size:12px}
-.empty{text-align:center;color:var(--muted);padding:20px}
-@media(max-width:500px){main{padding-top:14px}.grid{grid-template-columns:1fr 1fr}.two{grid-template-columns:1fr}.value{font-size:21px}}
-</style>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#101311">
+  <meta name="description" content="Controle pessoal de dinheiro, investimentos e patrimônio.">
+
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icon.svg">
+  <link rel="stylesheet" href="style.css">
+
+  <title>Meu Dinheiro</title>
 </head>
+
 <body>
 <main>
-  <div class="top">
-    <div><h1>Meu Dinheiro</h1><div class="sub">Acompanhe cada real sem complicar.</div></div>
-    <button id="clear" class="secondary" title="Apagar todos os dados">↺</button>
-  </div>
 
-  <div class="card hero">
-    <div class="small">Patrimônio acumulado</div>
+  <header class="top">
+    <div>
+      <h1>Meu Dinheiro</h1>
+      <p class="sub">Seu dinheiro, organizado sem complicar.</p>
+    </div>
+
+    <button id="clearData" class="secondary" title="Apagar todos os dados">
+      ↺
+    </button>
+  </header>
+
+  <!-- RESUMO -->
+  <section class="hero card">
+    <div class="small">Patrimônio investido</div>
     <div id="patrimonio" class="value">R$ 0,00</div>
-    <div class="small"><span id="aporte">R$ 0,00</span> investidos</div>
-    <div class="progress"><i id="bar"></i></div>
-    <div class="small" style="margin-top:8px">Meta do contrato: R$ 7.500 em aportes</div>
-  </div>
 
+    <div class="hero-info">
+      <span>
+        Investido: <strong id="totalInvestido">R$ 0,00</strong>
+      </span>
+
+      <span>
+        Rendimento: <strong id="totalRendimento">R$ 0,00</strong>
+      </span>
+    </div>
+
+    <div class="progress">
+      <i id="goalBar"></i>
+    </div>
+
+    <div class="small goal-text">
+      Meta de aportes: R$ 7.500
+    </div>
+  </section>
+
+  <!-- ENTRADAS E SAÍDAS -->
   <section class="grid">
-    <div class="card"><div class="small">Entradas</div><div id="entradas" class="value">R$ 0,00</div></div>
-    <div class="card"><div class="small">Saídas</div><div id="saidas" class="value">R$ 0,00</div></div>
+    <div class="card">
+      <div class="small">Entradas</div>
+      <div id="entradas" class="value">R$ 0,00</div>
+    </div>
+
+    <div class="card">
+      <div class="small">Saídas</div>
+      <div id="saidas" class="value">R$ 0,00</div>
+    </div>
   </section>
 
+  <!-- RENDA -->
   <section class="card">
-    <h2>Divisão mensal</h2>
-    <div class="row"><span>Necessidades</span><b>R$ 200 · 20%</b></div>
-    <div class="row"><span>Comida + roupas</span><b>R$ 250 · 25%</b></div>
-    <div class="row"><span>Patrimônio</span><b>R$ 300 · 30%</b></div>
-    <div class="row"><span>Objetivos</span><b>R$ 150 · 15%</b></div>
-    <div class="row"><span>Lazer/livre</span><b>R$ 100 · 10%</b></div>
+    <h2>Minha renda</h2>
+
+    <p class="small">
+      Informe quanto você espera receber neste mês.
+      A divisão será recalculada automaticamente.
+    </p>
+
+    <div class="two">
+      <div>
+        <label for="monthlyIncome">Renda mensal</label>
+        <input
+          id="monthlyIncome"
+          type="number"
+          min="0"
+          step="0.01"
+          placeholder="Ex.: 900"
+        >
+      </div>
+
+      <div>
+        <label for="monthReference">Mês</label>
+        <input
+          id="monthReference"
+          type="month"
+        >
+      </div>
+    </div>
   </section>
 
+  <!-- DIVISÃO -->
   <section class="card">
-    <h2>Adicionar lançamento</h2>
-    <form id="form">
-      <div class="two">
-        <select id="type"><option value="entrada">Entrada</option><option value="saida">Saída</option><option value="investimento">Investimento</option></select>
-        <input id="value" type="number" step="0.01" min="0" placeholder="Valor (R$)" required>
+    <div class="section-heading">
+      <div>
+        <h2>Divisão da renda</h2>
+        <p class="small">Você define as porcentagens.</p>
       </div>
-      <div class="two">
-        <select id="category">
-          <option>Salário</option><option>Freela</option><option>Investimento</option>
-          <option>Necessidades</option><option>Comida</option><option>Roupas</option>
-          <option>Objetivos</option><option>Lazer</option><option>Outros</option>
-        </select>
-        <input id="date" type="date" required>
+
+      <strong id="percentageTotal">100%</strong>
+    </div>
+
+    <div class="budget-list">
+
+      <div class="budget-row">
+        <div>
+          <strong>Necessidades</strong>
+          <span>Contas e gastos fixos</span>
+        </div>
+
+        <div class="budget-controls">
+          <input class="budget-percent" data-category="necessidades" type="number" min="0" max="100" step="1">
+          <strong id="budgetNecessidades">R$ 0,00</strong>
+        </div>
       </div>
-      <input id="note" placeholder="Descrição (opcional)">
-      <div class="actions"><button type="submit">Adicionar</button></div>
+
+      <div class="budget-row">
+        <div>
+          <strong>Comida + roupas</strong>
+          <span>Gastos pessoais</span>
+        </div>
+
+        <div class="budget-controls">
+          <input class="budget-percent" data-category="comida" type="number" min="0" max="100" step="1">
+          <strong id="budgetComida">R$ 0,00</strong>
+        </div>
+      </div>
+
+      <div class="budget-row">
+        <div>
+          <strong>Patrimônio</strong>
+          <span>Investimentos</span>
+        </div>
+
+        <div class="budget-controls">
+          <input class="budget-percent" data-category="patrimonio" type="number" min="0" max="100" step="1">
+          <strong id="budgetPatrimonio">R$ 0,00</strong>
+        </div>
+      </div>
+
+      <div class="budget-row">
+        <div>
+          <strong>Objetivos</strong>
+          <span>Viagens, compras e metas</span>
+        </div>
+
+        <div class="budget-controls">
+          <input class="budget-percent" data-category="objetivos" type="number" min="0" max="100" step="1">
+          <strong id="budgetObjetivos">R$ 0,00</strong>
+        </div>
+      </div>
+
+      <div class="budget-row">
+        <div>
+          <strong>Lazer / livre</strong>
+          <span>Dinheiro sem destino específico</span>
+        </div>
+
+        <div class="budget-controls">
+          <input class="budget-percent" data-category="lazer" type="number" min="0" max="100" step="1">
+          <strong id="budgetLazer">R$ 0,00</strong>
+        </div>
+      </div>
+
+    </div>
+
+    <div id="percentageWarning" class="warning hidden">
+      As porcentagens precisam totalizar 100%.
+    </div>
+  </section>
+
+  <!-- CDI -->
+  <section class="card">
+    <h2>Referência do CDI</h2>
+
+    <p class="small">
+      Use a taxa anual do CDI para estimar o rendimento dos investimentos
+      que acompanham o CDI.
+    </p>
+
+    <div class="two">
+      <div>
+        <label for="cdiRate">CDI anual (%)</label>
+        <input
+          id="cdiRate"
+          type="number"
+          min="0"
+          step="0.01"
+          placeholder="Ex.: 14,90"
+        >
+      </div>
+
+      <div class="rate-preview">
+        <span>CDI mensal estimado</span>
+        <strong id="monthlyCdi">0,00%</strong>
+      </div>
+    </div>
+  </section>
+
+  <!-- INVESTIMENTOS -->
+  <section class="card">
+    <div class="section-heading">
+      <div>
+        <h2>Investimentos</h2>
+        <p class="small">Veja quanto cada investimento pode render.</p>
+      </div>
+    </div>
+
+    <div id="investmentList" class="investment-list">
+      <div class="empty">
+        Nenhum investimento cadastrado.
+      </div>
+    </div>
+
+    <hr>
+
+    <h3>Novo investimento</h3>
+
+    <form id="investmentForm">
+
+      <input
+        id="investmentName"
+        type="text"
+        placeholder="Nome (ex.: CDB Inter)"
+        required
+      >
+
+      <div class="two">
+        <div>
+          <label for="investmentAmount">Valor investido</label>
+          <input
+            id="investmentAmount"
+            type="number"
+            min="0"
+            step="0.01"
+            placeholder="R$"
+            required
+          >
+        </div>
+
+        <div>
+          <label for="investmentType">Tipo de rendimento</label>
+          <select id="investmentType">
+            <option value="monthly">Taxa mensal</option>
+            <option value="cdi">% do CDI</option>
+          </select>
+        </div>
+      </div>
+
+      <div id="monthlyRateField">
+        <label for="investmentRate">Taxa mensal (%)</label>
+        <input
+          id="investmentRate"
+          type="number"
+          min="0"
+          step="0.01"
+          placeholder="Ex.: 0,80"
+        >
+      </div>
+
+      <div id="cdiPercentField" class="hidden">
+        <label for="investmentCdiPercent">% do CDI</label>
+        <input
+          id="investmentCdiPercent"
+          type="number"
+          min="0"
+          step="1"
+          placeholder="Ex.: 100"
+        >
+      </div>
+
+      <button type="submit">
+        Adicionar investimento
+      </button>
     </form>
   </section>
 
+  <!-- LANÇAMENTOS -->
+  <section class="card">
+    <h2>Adicionar lançamento</h2>
+
+    <form id="transactionForm">
+
+      <div class="two">
+        <select id="transactionType">
+          <option value="entrada">Entrada</option>
+          <option value="saida">Saída</option>
+          <option value="investimento">Investimento</option>
+        </select>
+
+        <input
+          id="transactionValue"
+          type="number"
+          min="0"
+          step="0.01"
+          placeholder="Valor (R$)"
+          required
+        >
+      </div>
+
+      <div class="two">
+        <select id="transactionCategory">
+          <option>Salário</option>
+          <option>Freela</option>
+          <option>Investimento</option>
+          <option>Necessidades</option>
+          <option>Comida</option>
+          <option>Roupas</option>
+          <option>Objetivos</option>
+          <option>Lazer</option>
+          <option>Outros</option>
+        </select>
+
+        <input
+          id="transactionDate"
+          type="date"
+          required
+        >
+      </div>
+
+      <input
+        id="transactionNote"
+        placeholder="Descrição (opcional)"
+      >
+
+      <button type="submit">
+        Adicionar lançamento
+      </button>
+    </form>
+  </section>
+
+  <!-- HISTÓRICO -->
   <section class="card">
     <h2>Histórico</h2>
-    <div id="list" class="empty">Nenhum lançamento ainda.</div>
+
+    <div id="transactionList" class="empty">
+      Nenhum lançamento ainda.
+    </div>
   </section>
+
 </main>
-<script>
-const KEY='meu-dinheiro-v1';
-let data=JSON.parse(localStorage.getItem(KEY)||'[]');
-const brl=n=>new Intl.NumberFormat('pt-BR',{style:'currency',currency:'BRL'}).format(n);
-const $=id=>document.getElementById(id);
-$('date').value=new Date().toISOString().slice(0,10);
-function save(){localStorage.setItem(KEY,JSON.stringify(data));render()}
-function render(){
- let entradas=data.filter(x=>x.type==='entrada').reduce((a,x)=>a+x.value,0);
- let saidas=data.filter(x=>x.type==='saida').reduce((a,x)=>a+x.value,0);
- let invest=data.filter(x=>x.type==='investimento').reduce((a,x)=>a+x.value,0);
- $('entradas').textContent=brl(entradas); $('saidas').textContent=brl(saidas);
- $('aporte').textContent=brl(invest); $('patrimonio').textContent=brl(invest);
- $('bar').style.width=Math.min(100,invest/7500*100)+'%';
- let sorted=[...data].sort((a,b)=>b.date.localeCompare(a.date));
- $('list').className=sorted.length?'':'empty';
- $('list').innerHTML=sorted.length?sorted.map((x,i)=>`
- <div class="row"><div><b>${x.note||x.category}</b><div class="small">${x.category} · ${new Date(x.date+'T12:00').toLocaleDateString('pt-BR')}</div></div>
- <div style="text-align:right"><b class="amount ${x.type==='entrada'?'pos':x.type==='investimento'?'pos':'neg'}">${x.type==='saida'?'−':'+'}${brl(x.value)}</b><br>
- <button class="danger" style="padding:4px 7px;font-size:11px" onclick="removeItem(${data.indexOf(x)})">excluir</button></div></div>`).join(''):'Nenhum lançamento ainda.';
-}
-function removeItem(i){data.splice(i,1);save()}
-$('form').onsubmit=e=>{e.preventDefault();data.push({type:$('type').value,value:Number($('value').value),category:$('category').value,date:$('date').value,note:$('note').value.trim()});e.target.reset();$('date').value=new Date().toISOString().slice(0,10);save()};
-$('clear').onclick=()=>{if(confirm('Apagar todos os lançamentos?')){data=[];save()}};
-if('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js');
-render();
-</script>
+
+<script src="app.js"></script>
 </body>
 </html>
